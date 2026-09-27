@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "WhatsApp Clone Link Redirect",
+  "version": "1.0.0",
+  "description": "Open WhatsApp group and channel links clicked on Facebook in WhatsApp Clone first.",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.facebook.com/*",
+        "https://m.facebook.com/*",
+        "https://web.facebook.com/*",
+        "https://l.facebook.com/*"
+      ],
+      "js": ["redirect.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

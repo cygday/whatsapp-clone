@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Join {{ group.name }} | WhatsApp Clone{% endblock %}
+{% block content %}
+<section class="panel" style="max-width:620px;margin:32px auto">
+  <h1>{{ group.name }}</h1>
+  <p class="muted">{{ group.description|default:'WhatsApp Clone group' }}</p>
+  <p>Created by {{ group.created_by.username }}. Joining lets you view and send messages in this app.</p>
+  {% if already_member %}
+    <a class="button" href="{% url 'groups:detail' group.pk %}">Open group</a>
+  {% else %}
+    <form method="post">{% csrf_token %}<button type="submit">Join and view group</button></form>
+  {% endif %}
+</section>
+{% endblock %}

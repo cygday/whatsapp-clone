@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Profile | WhatsApp Clone{% endblock %}
+{% block content %}
+<section class="panel" style="max-width:560px">
+  <h1>Your profile</h1><p class="muted">Signed in as {{ request.user.username }}</p>
+  <form method="post">{% csrf_token %}<label for="email">Email</label><input id="email" type="email" name="email" value="{{ request.user.email }}"><label for="phone_number">Phone number</label><input id="phone_number" name="phone_number" value="{{ request.user.phone_number }}"><button type="submit">Save profile</button></form>
+</section>
+{% endblock %}

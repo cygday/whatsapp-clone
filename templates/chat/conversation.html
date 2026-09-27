@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Chat with {{ other.username }} | WhatsApp Clone{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="row" style="border-bottom:1px solid #dce4df;padding-bottom:14px"><div><h1>{{ other.username }}</h1><small class="muted">Private conversation</small></div><a class="button secondary" href="{% url 'chat:inbox' %}">All chats</a></div>
+  <div class="conversation" id="conversation">{% for message in chat_messages %}<div class="bubble {% if message.sender_id == request.user.id %}mine{% endif %}"><strong>{{ message.sender.username }}</strong><div>{{ message.content|linebreaksbr }}</div><small>{{ message.created_at|date:'M j, H:i' }}</small></div>{% empty %}<p class="muted">This is the beginning of your conversation.</p>{% endfor %}</div>
+  <form method="post">{% csrf_token %}<label for="message-content">Message</label><textarea id="message-content" name="content" maxlength="5000" required placeholder="Write a message..."></textarea><button type="submit">Send message</button></form>
+</section>
+<script>const conversation=document.getElementById('conversation');conversation.scrollTop=conversation.scrollHeight;</script>
+{% endblock %}

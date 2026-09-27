@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}WhatsApp link | WhatsApp Clone{% endblock %}
+{% block content %}
+<section class="panel" style="max-width:650px;margin:30px auto">
+  {% if whatsapp_url %}
+    <h1>WhatsApp invite</h1>
+    <p class="muted">This is an external WhatsApp invite. You can save it here, but WhatsApp controls joining and viewing that group's messages.</p>
+    <div class="person" style="overflow-wrap:anywhere"><strong>Link</strong><br><a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer">{{ whatsapp_url }}</a></div>
+    <div class="row" style="margin-top:16px;justify-content:flex-start;flex-wrap:wrap">
+      <a class="button" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer">Open in WhatsApp</a>
+      <a class="button secondary" href="{% url 'chat:inbox' %}">Back to WhatsApp Clone</a>
+    </div>
+    <form method="post" action="{% url 'chat:save_external_link' %}" style="margin-top:24px">
+      {% csrf_token %}
+      <label for="id_title">Save this link in WhatsApp Clone</label>
+      <input id="id_title" name="title" maxlength="120" placeholder="Optional name, e.g. Friends group">
+      <input type="hidden" name="url" value="{{ whatsapp_url }}">
+      <button type="submit">Save link</button>
+    </form>
+  {% else %}
+    <h1>Link not supported</h1>
+    <p class="muted">WhatsApp Clone only accepts secure WhatsApp group invite and channel links.</p>
+    <a class="button secondary" href="{% url 'chat:inbox' %}">Back to WhatsApp Clone</a>
+  {% endif %}
+</section>
+{% endblock %}

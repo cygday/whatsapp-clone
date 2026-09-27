@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Chats | WhatsApp Clone{% endblock %}
+{% block content %}
+<div class="row" style="margin-bottom:18px"><div><h1>Your chats</h1><p class="muted">Private conversations and groups in one place.</p></div></div>
+<div class="layout">
+  <section class="panel"><h2>Conversations</h2>
+    {% for chat, other, latest in chat_rows %}<div class="person"><a href="{% url 'chat:conversation' chat.pk %}"><strong>{{ other.username }}</strong></a><br><small>{% if latest %}{{ latest.content|truncatechars:65 }}{% else %}No messages yet{% endif %}</small></div>{% empty %}<p class="muted">No conversations yet. Start one with someone below.</p>{% endfor %}
+    <h2 style="margin-top:22px">Groups</h2>
+    {% for group in groups %}<div class="person"><a href="{% url 'groups:detail' group.pk %}"><strong>{{ group.name }}</strong></a></div>{% empty %}<p class="muted">You haven't joined a group yet.</p>{% endfor %}
+  </section>
+  <div class="stack">
+    <section class="panel"><h2>Start a conversation</h2>
+      {% for person in people %}<div class="person row"><span>{{ person.username }}</span><form method="post" action="{% url 'chat:start' %}">{% csrf_token %}<input type="hidden" name="recipient_id" value="{{ person.pk }}"><button type="submit">Message</button></form></div>{% empty %}<p class="muted">No other accounts yet.</p>{% endfor %}
+    </section>
+    <section class="panel"><h2>Create a group</h2><form method="post" action="{% url 'groups:create' %}">{% csrf_token %}<label for="group-name">Group name</label><input id="group-name" name="name" maxlength="100" required><label for="group-description">Description</label><textarea id="group-description" name="description"></textarea><button type="submit">Create group</button></form></section>
+    <section class="panel"><h2>Saved WhatsApp links</h2>
+      <p class="muted">Save group or channel links copied from Facebook. Opening one takes you to WhatsApp; external WhatsApp groups are separate from groups in this app.</p>
+      <form method="post" action="{% url 'chat:save_external_link' %}">{% csrf_token %}
+        <label for="id_title">Name</label>{{ external_link_form.title }}
+        <label for="id_url">WhatsApp link</label>{{ external_link_form.url }}
+        <button type="submit">Save link</button>
+      </form>
+      {% for link in saved_whatsapp_links %}
+        <div class="person row"><a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.title|default:link.url }}</a><form method="post" action="{% url 'chat:delete_external_link' link.pk %}">{% csrf_token %}<button class="secondary" type="submit" aria-label="Remove {{ link.title|default:'saved link' }}">Remove</button></form></div>
+      {% empty %}<p class="muted" style="margin-top:14px">No links saved yet.</p>{% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Sign in | WhatsApp Clone{% endblock %}
+{% block content %}
+<section class="panel" style="max-width:430px;margin:50px auto">
+  <h1>Welcome back</h1><p class="muted">Sign in to your conversations.</p>
+  <form method="post">{% csrf_token %}{{ form.non_field_errors }}
+    <label for="id_username">Username</label>{{ form.username }}
+    <label for="id_password">Password</label>{{ form.password }}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit">Sign in</button>
+  </form>
+  <p style="margin:16px 0 0">New here? <a href="{% url 'register' %}">Create an account</a></p>
+</section>
+{% endblock %}

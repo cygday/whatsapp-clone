@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ group.name }} | WhatsApp Clone{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="row" style="border-bottom:1px solid #dce4df;padding-bottom:14px"><div><h1>{{ group.name }}</h1><small class="muted">{{ group.description|default:'Group conversation' }}</small></div><a class="button secondary" href="{% url 'chat:inbox' %}">All chats</a></div>
+  <div class="conversation">{% for message in group_messages %}<div class="bubble {% if message.sender_id == request.user.id %}mine{% endif %}"><strong>{{ message.sender.username }}</strong><div>{{ message.content|linebreaksbr }}</div><small>{{ message.created_at|date:'M j, H:i' }}</small></div>{% empty %}<p class="muted">No messages in this group yet.</p>{% endfor %}</div>
+  <form method="post" action="{% url 'groups:send_message' group.pk %}">{% csrf_token %}<label for="message-content">Message</label><textarea id="message-content" name="content" maxlength="5000" required placeholder="Write to the group..."></textarea><button type="submit">Send message</button></form>
+</section>
+<div class="layout" style="margin-top:18px"><section class="panel"><h2>Invite link</h2><p class="muted">Share this link so another WhatsApp Clone user can join and view this group here.</p><input type="url" readonly value="{{ group_invite_url }}" aria-label="Group invite link" onclick="this.select()"><p style="margin:10px 0 0"><a href="{{ group_invite_url }}">Open invite preview</a></p><h2 style="margin-top:22px">Members</h2>{% for membership in members %}<div class="person">{{ membership.user.username }} <small>{{ membership.get_role_display }}</small></div>{% endfor %}
+{% if member.role == 'creator' or member.role == 'admin' %}<h2 style="margin-top:18px">Add a member</h2>{% for person in people %}<div class="person row"><span>{{ person.username }}</span><form method="post" action="{% url 'groups:add_member' group.pk %}">{% csrf_token %}<input type="hidden" name="user_id" value="{{ person.pk }}"><button type="submit">Add</button></form></div>{% empty %}<p class="muted">Everyone is already in this group.</p>{% endfor %}{% endif %}
+{% if member.role != 'creator' %}<form method="post" action="{% url 'groups:leave' group.pk %}" style="margin-top:16px">{% csrf_token %}<button class="secondary" type="submit">Leave group</button></form>{% endif %}</section></div>
+{% endblock %}
