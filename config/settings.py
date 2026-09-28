@@ -14,21 +14,48 @@ from pathlib import Path
 import os
 import dj_database_url
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+
+
+# Check if running on Render with a volume mounted at /data
+if os.environ.get('RENDER'):
+    DB_PATH = os.path.join('/tmp', 'db.sqlite3')
+else:
+    DB_PATH = BASE_DIR / 'db.sqlite3'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': DB_PATH,
+    }
+}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-development-only-key')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
+DEBUG = False
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,192.168.1.19                                                                        ').split(',')
 
+# 1. Update your SECRET_KEY to fallback gracefully if needed
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-fallback-development-key-12345')
+
+# 2. Allow Render's domain and local testing environments
+ALLOWED_HOSTS = ['.onrender.com', '127.0.0.1', 'localhost']
+
+# Tell Django to trust the Render domain for form submissions (POST requests)
+CSRF_TRUSTED_ORIGINS = [
+    'https://whatsapp-clone-q1ad.onrender.com',
+    'https://*.onrender.com'  # Alternative wildcard coverage
+]
 
 # Application definition
 
