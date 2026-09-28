@@ -1,6 +1,6 @@
 # WhatsApp Clone
 
-A Django starter for account registration, private conversations, and member-managed group chats. The app uses SQLite by default, so it runs locally without a separate database service.
+A Django starter for account registration, private conversations, and member-managed group chats. It uses SQLite by default for local development and can use a hosted PostgreSQL database through `DATABASE_URL`.
 
 ## Run locally
 
@@ -13,6 +13,19 @@ python manage.py runserver
 ```
 
 Open `http://127.0.0.1:8000/` and create an account. To administer the local database, create an administrator with `python manage.py createsuperuser` and visit `/admin/`.
+
+## Use hosted PostgreSQL
+
+Create a free PostgreSQL database with a hosting provider such as [Neon](https://neon.tech/), then set `DATABASE_URL` to the connection URL provided by the host. Keep this URL secret and do not commit it to the repository. For example, on Linux or macOS:
+
+```bash
+export DATABASE_URL='postgresql://USER:PASSWORD@HOST/DBNAME?sslmode=require'
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+Run `migrate` against the hosted database before starting the app. If `DATABASE_URL` is not set, the app continues to use the local `db.sqlite3` file.
 
 ## Route Facebook WhatsApp Links Through the App
 
