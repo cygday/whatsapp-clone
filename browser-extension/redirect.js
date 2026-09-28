@@ -46,7 +46,9 @@ document.addEventListener('click', (event) => {
 
   event.preventDefault();
   event.stopImmediatePropagation();
-  const relayUrl = new URL('http://127.0.0.1:8000/chat/links/open/');
-  relayUrl.searchParams.set('url', whatsappUrl);
-  window.location.assign(relayUrl.href);
+  chrome.storage.sync.get({ appUrl: 'https://whatsapp-clone-q1ad.onrender.com' }, ({ appUrl }) => {
+    const relayUrl = new URL('/chat/links/open/', appUrl);
+    relayUrl.searchParams.set('url', whatsappUrl);
+    window.location.assign(relayUrl.href);
+  });
 }, true);
